@@ -34,23 +34,23 @@ export const myPerk = definePerk({
 
 In `src/perks/<name>/index.ts`, re-export the public pieces for that perk.
 
-Then add the perk to `src/perks/index.ts`.
+Then add the perk to `src/perks/chart.ts`.
 
-## How The Registry Works
+## How The Perk Chart Works
 
-There is no dynamic plugin discovery.
+There is no dynamic perk discovery.
 
-`src/perks/index.ts` is the project's perk registry/barrel. Loadout files import perks from there:
+`src/perks/chart.ts` is the project's perk chart. Loadout files import perks from there:
 
 ```ts
-import { envPerk } from "../../src/perks/index.ts";
+import { envPerk } from "../../src/perks/chart.ts";
 ```
 
 So when you add a new perk:
 
 1. implement it under `src/perks/<name>/`
 2. export it from `src/perks/<name>/index.ts`
-3. re-export it from `src/perks/index.ts`
+3. re-export it from `src/perks/chart.ts`
 
 That keeps the public import surface simple and predictable.
 

@@ -1,5 +1,5 @@
 import { defineLoadout, credentialSecretSchema, vaultRead } from "../../src/loadout.ts";
-import { beekeeperPerk } from "../../src/perks/index.ts";
+import { beekeeperPerk } from "../../src/perks/chart.ts";
 
 const secrets = {
   credentials: vaultRead("secret/path/to/static-creds/example_user", credentialSecretSchema),

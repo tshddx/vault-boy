@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { defineLoadout, vaultRead } from "../../src/loadout.ts";
-import { envPerk } from "../../src/perks/index.ts";
+import { envPerk } from "../../src/perks/chart.ts";
 
 const secrets = {
   postgres: {
