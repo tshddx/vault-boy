@@ -1,6 +1,5 @@
 import { z } from "zod";
-import type { ResolvedSecrets, StringLeafPath } from "../../task.ts";
-import { definePerk, getValueAtPath } from "../../task.ts";
+import { definePerk } from "../../task.ts";
 import { encryptBeekeeperSecret, loadBeekeeperEncryptionKey } from "./crypto.ts";
 import { isBeekeeperDatabaseBusy, upsertBeekeeperSavedConnection } from "./database.ts";
 import { getBeekeeperPaths } from "./paths.ts";
@@ -17,24 +16,6 @@ export const beekeeperLabelColors = [
 ] as const;
 
 export type BeekeeperLabelColor = (typeof beekeeperLabelColors)[number];
-
-export type BeekeeperConnectionConfig<TSecrets> = {
-  color?: BeekeeperLabelColor;
-  connectionType?: string;
-  defaultDatabase: string;
-  host: string;
-  label: string;
-  port?: number;
-  username: StringLeafPath<TSecrets>;
-  password: StringLeafPath<TSecrets>;
-  ssl?: boolean;
-  sslRejectUnauthorized?: boolean;
-};
-
-export type BeekeeperPerkConfig<TSecretDefinitions> = {
-  appDirectory?: string;
-  connections: Array<BeekeeperConnectionConfig<ResolvedSecrets<TSecretDefinitions>>>;
-};
 
 const beekeeperPerkConfigSchema = z.object({
   appDirectory: z.string().optional(),
@@ -57,7 +38,7 @@ const beekeeperPerkConfigSchema = z.object({
 export const beekeeperPerk = definePerk({
   name: "beekeeper",
   configSchema: beekeeperPerkConfigSchema,
-  run({ config, secrets }) {
+  run({ config }) {
     const paths = getBeekeeperPaths(config.appDirectory);
 
     if (isBeekeeperDatabaseBusy(paths.databasePath)) {
@@ -69,18 +50,7 @@ export const beekeeperPerk = definePerk({
     const encryptionKey = loadBeekeeperEncryptionKey(paths.keyPath);
 
     for (const connection of config.connections) {
-      const username = getValueAtPath(secrets, connection.username);
-      const password = getValueAtPath(secrets, connection.password);
-
-      if (typeof username !== "string") {
-        throw new Error(`Path "${connection.username}" did not resolve to a string username.`);
-      }
-
-      if (typeof password !== "string") {
-        throw new Error(`Path "${connection.password}" did not resolve to a string password.`);
-      }
-
-      const encryptedPassword = encryptBeekeeperSecret(password, encryptionKey);
+      const encryptedPassword = encryptBeekeeperSecret(connection.password, encryptionKey);
 
       upsertBeekeeperSavedConnection({
         databasePath: paths.databasePath,
@@ -94,7 +64,7 @@ export const beekeeperPerk = definePerk({
           port: connection.port ?? 5432,
           ssl: connection.ssl ?? true,
           sslRejectUnauthorized: connection.sslRejectUnauthorized ?? true,
-          username,
+          username: connection.username,
         },
       });
     }

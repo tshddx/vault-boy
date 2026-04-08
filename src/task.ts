@@ -21,18 +21,6 @@ export type ResolvedSecrets<TDefinition> =
         }
       : never;
 
-type DotJoin<TPrefix extends string, TSuffix extends string> = `${TPrefix}.${TSuffix}`;
-
-export type StringLeafPath<TValue> = TValue extends object
-  ? {
-      [TKey in Extract<keyof TValue, string>]: TValue[TKey] extends string
-        ? TKey
-        : TValue[TKey] extends object
-          ? DotJoin<TKey, StringLeafPath<TValue[TKey]>>
-          : never;
-    }[Extract<keyof TValue, string>]
-  : never;
-
 export type PerkModule<TConfigSchema extends z.ZodTypeAny> = {
   name: string;
   configSchema: TConfigSchema;
@@ -48,7 +36,7 @@ export type TaskDefinition<
 > = {
   secrets: TSecrets;
   perk: TPerk;
-  perkConfig: z.input<TPerk["configSchema"]>;
+  perkConfig(args: { secrets: ResolvedSecrets<TSecrets> }): z.input<NoInfer<TPerk["configSchema"]>>;
 };
 
 export function vaultRead<TSchema extends z.ZodTypeAny>(
@@ -98,16 +86,6 @@ export function resolveSecretDefinitions<TDefinition extends SecretDefinitionTre
   });
 
   return Object.fromEntries(resolvedEntries) as ResolvedSecrets<TDefinition>;
-}
-
-export function getValueAtPath(target: unknown, path: string): unknown {
-  return path.split(".").reduce<unknown>((current, segment) => {
-    if (typeof current !== "object" || current === null || !(segment in current)) {
-      throw new Error(`Path "${path}" was not found in the resolved secrets.`);
-    }
-
-    return (current as Record<string, unknown>)[segment];
-  }, target);
 }
 
 export const credentialSecretSchema = z.object({

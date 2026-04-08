@@ -36,17 +36,7 @@ vp test
 Run an explicit task file with Vite Task:
 
 ```bash
-vp run vault-boy -- .local/tasks/prod-atlas.ts
-```
-
-Or run a perk directly from command-line arguments:
-
-```bash
-vp run vault-boy -- \
-  --perk beekeeper \
-  --vault-read credentials=env/global/database/prod/static-creds/atlas_admin \
-  --connection-name "PROD atlas" \
-  --secret-key credentials
+vp run vault-boy -- .local/tasks/hadrian.ts
 ```
 
 Private tasks live under `.local/` and are gitignored.
@@ -72,7 +62,7 @@ They define:
 - which Vault paths to read
 - the schema expected from each read
 - which perk to execute
-- typed config for that perk
+- callback-based config for that perk using resolved secrets
 
 See `examples/tasks/beekeeper.ts` for a public example.
 
@@ -90,4 +80,4 @@ When a label already exists, it updates connection settings, credentials, color,
 
 When a label does not exist, it creates a brand new Beekeeper connection from the values in the task.
 
-In task files, configure Beekeeper with `connections[]`, where each connection includes `host` and `defaultDatabase`, and points at string-valued secret paths such as `credentials.username` and `credentials.password`. Each connection can also set `color`, `port`, `connectionType`, `ssl`, and `sslRejectUnauthorized`.
+In task files, configure Beekeeper with `connections[]`, where each connection includes `host` and `defaultDatabase`, and uses resolved secret values from `perkConfig: ({ secrets }) => ({ ... })`. Each connection can also set `color`, `port`, `connectionType`, `ssl`, and `sslRejectUnauthorized`.

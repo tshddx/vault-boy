@@ -1,5 +1,4 @@
 import { defineTask, credentialSecretSchema, vaultRead } from "../../src/task.ts";
-import type { BeekeeperPerkConfig } from "../../src/perks/beekeeper/perk.ts";
 import { beekeeperPerk } from "../../src/perks/index.ts";
 
 const secrets = {
@@ -9,15 +8,15 @@ const secrets = {
 export default defineTask({
   secrets,
   perk: beekeeperPerk,
-  perkConfig: {
+  perkConfig: ({ secrets: s }) => ({
     connections: [
       {
         defaultDatabase: "example_db",
         host: "db.example.com",
         label: "Example Connection",
-        username: "credentials.username",
-        password: "credentials.password",
+        username: s.credentials.username,
+        password: s.credentials.password,
       },
     ],
-  } satisfies BeekeeperPerkConfig<typeof secrets>,
+  }),
 });
