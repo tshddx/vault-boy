@@ -66,6 +66,8 @@ They define:
 
 See `examples/tasks/beekeeper.ts` for a public example.
 
+See `examples/tasks/env.ts` for a perk that writes resolved secrets into a `.env` file.
+
 ## Beekeeper perk
 
 The Beekeeper perk creates or updates saved connections in Beekeeper Studio's `app.db`.
