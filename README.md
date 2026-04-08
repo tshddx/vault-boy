@@ -11,7 +11,7 @@ curl -fsSL https://vite.plus | bash
 vp help
 ```
 
-Install the [`vault` CLI] by following the [installation instructions](https://developer.hashicorp.com/vault/install), or run this on macOS with Homebrew:
+Install the `vault` CLI by following the [installation instructions](https://developer.hashicorp.com/vault/install), or run this on macOS with Homebrew:
 
 ```bash
 brew tap hashicorp/tap
@@ -41,6 +41,8 @@ vp run vault-boy -- examples/tasks/env.ts
 ```
 
 The bundled `env` example uses fictional Vault paths, so in practice you will usually copy it to a local task file and replace the paths with your own.
+
+## Perks
 
 `vault-boy` knows how to fetch secrets from Vault. A perk is a module that tells `vault-boy` how to save or output those resolved secrets.
 
