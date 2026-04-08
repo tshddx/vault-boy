@@ -19,10 +19,10 @@ export function parseCliArgs(args: string[]): string {
   return filteredArgs[0];
 }
 
-async function loadTask(taskPath: string): Promise<TaskDefinition<any, any>> {
+async function loadTask(taskPath: string): Promise<TaskDefinition<any, any, any>> {
   const absoluteTaskPath = path.resolve(taskPath);
   const imported = (await import(pathToFileURL(absoluteTaskPath).href)) as {
-    default?: TaskDefinition<any, any>;
+    default?: TaskDefinition<any, any, any>;
   };
 
   if (!imported.default) {

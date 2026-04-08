@@ -11,6 +11,7 @@ export default defineTask({
   perkConfig: ({ secrets: s }) => ({
     connections: [
       {
+        color: "red",
         defaultDatabase: "example_db",
         host: "db.example.com",
         label: "Example Connection",

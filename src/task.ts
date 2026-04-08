@@ -32,11 +32,12 @@ export type PerkModule<TConfigSchema extends z.ZodTypeAny> = {
 
 export type TaskDefinition<
   TSecrets extends SecretDefinitionTree,
-  TPerk extends PerkModule<z.ZodTypeAny>,
+  TConfigSchema extends z.ZodTypeAny,
+  TPerk extends PerkModule<TConfigSchema>,
 > = {
   secrets: TSecrets;
   perk: TPerk;
-  perkConfig(args: { secrets: ResolvedSecrets<TSecrets> }): z.input<NoInfer<TPerk["configSchema"]>>;
+  perkConfig(args: { secrets: ResolvedSecrets<TSecrets> }): z.input<TConfigSchema>;
 };
 
 export function vaultRead<TSchema extends z.ZodTypeAny>(
@@ -58,8 +59,11 @@ export function definePerk<TConfigSchema extends z.ZodTypeAny>(
 
 export function defineTask<
   TSecrets extends SecretDefinitionTree,
-  TPerk extends PerkModule<z.ZodTypeAny>,
->(task: TaskDefinition<TSecrets, TPerk>): TaskDefinition<TSecrets, TPerk> {
+  TConfigSchema extends z.ZodTypeAny,
+  TPerk extends PerkModule<TConfigSchema>,
+>(
+  task: TaskDefinition<TSecrets, TConfigSchema, TPerk>,
+): TaskDefinition<TSecrets, TConfigSchema, TPerk> {
   return task;
 }
 
