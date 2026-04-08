@@ -12,7 +12,7 @@ import {
 import {
   encryptBeekeeperSecret,
   loadBeekeeperEncryptionKey,
-  updateBeekeeperSavedConnection,
+  upsertBeekeeperSavedConnection,
 } from "./index.ts";
 
 describe("beekeeper perk helpers", () => {
@@ -32,7 +32,7 @@ describe("beekeeper perk helpers", () => {
     expect(decrypted).toBe("super-secret");
   });
 
-  test("updateBeekeeperSavedConnection updates username and password only", () => {
+  test("upsertBeekeeperSavedConnection updates an existing row and color", () => {
     const tempDir = createTempDir("vault-boy-db-");
     const databasePath = path.join(tempDir, "app.db");
     createBeekeeperDatabase(databasePath);
@@ -71,18 +71,30 @@ describe("beekeeper perk helpers", () => {
       );
     database.close();
 
-    updateBeekeeperSavedConnection({
+    upsertBeekeeperSavedConnection({
+      connection: {
+        color: "orange",
+        connectionType: "postgresql",
+        defaultDatabase: "atlas",
+        encryptedPassword: "encrypted-password",
+        host: "db.example.com",
+        label: "PROD atlas",
+        port: 5432,
+        ssl: true,
+        sslRejectUnauthorized: true,
+        username: "atlas_admin",
+      },
       databasePath,
-      connectionName: "PROD atlas",
-      username: "atlas_admin",
-      encryptedPassword: "encrypted-password",
     });
 
     const updatedDatabase = new Database(databasePath, { readonly: true });
     const row = updatedDatabase
-      .prepare("SELECT username, password, host, port FROM saved_connection WHERE name = ?")
+      .prepare(
+        "SELECT username, password, host, port, labelColor FROM saved_connection WHERE name = ?",
+      )
       .get("PROD atlas") as {
       host: string;
+      labelColor: string;
       password: string;
       port: number;
       username: string;
@@ -94,7 +106,56 @@ describe("beekeeper perk helpers", () => {
       password: "encrypted-password",
       host: "db.example.com",
       port: 5432,
+      labelColor: "orange",
     });
+  });
+
+  test("upsertBeekeeperSavedConnection creates a missing row from explicit config", () => {
+    const tempDir = createTempDir("vault-boy-upsert-");
+    const databasePath = path.join(tempDir, "app.db");
+    createBeekeeperDatabase(databasePath);
+
+    upsertBeekeeperSavedConnection({
+      connection: {
+        color: "green",
+        connectionType: "postgresql",
+        defaultDatabase: "atlas",
+        encryptedPassword: "new-password",
+        host: "db.example.com",
+        label: "STAGING atlas (admin)",
+        port: 5432,
+        ssl: true,
+        sslRejectUnauthorized: true,
+        username: "atlas_admin",
+      },
+      databasePath,
+    });
+
+    const updatedDatabase = new Database(databasePath, { readonly: true });
+    const row = updatedDatabase
+      .prepare(
+        "SELECT name, username, password, host, port, defaultDatabase, labelColor, uniqueHash FROM saved_connection WHERE name = ?",
+      )
+      .get("STAGING atlas (admin)") as {
+      defaultDatabase: string;
+      host: string;
+      labelColor: string;
+      name: string;
+      password: string;
+      port: number;
+      uniqueHash: string;
+      username: string;
+    };
+    updatedDatabase.close();
+
+    expect(row.name).toBe("STAGING atlas (admin)");
+    expect(row.username).toBe("atlas_admin");
+    expect(row.password).toBe("new-password");
+    expect(row.host).toBe("db.example.com");
+    expect(row.port).toBe(5432);
+    expect(row.defaultDatabase).toBe("atlas");
+    expect(row.labelColor).toBe("green");
+    expect(row.uniqueHash.length).toBeGreaterThan(0);
   });
 
   test("fixture key file is written to disk", () => {

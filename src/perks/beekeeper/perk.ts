@@ -2,13 +2,20 @@ import { z } from "zod";
 import type { ResolvedSecrets, StringLeafPath } from "../../task.ts";
 import { definePerk, getValueAtPath } from "../../task.ts";
 import { encryptBeekeeperSecret, loadBeekeeperEncryptionKey } from "./crypto.ts";
-import { isBeekeeperDatabaseBusy, updateBeekeeperSavedConnection } from "./database.ts";
+import { isBeekeeperDatabaseBusy, upsertBeekeeperSavedConnection } from "./database.ts";
 import { getBeekeeperPaths } from "./paths.ts";
 
 export type BeekeeperConnectionConfig<TSecrets> = {
+  color?: string;
+  connectionType?: string;
+  defaultDatabase: string;
+  host: string;
   label: string;
+  port?: number;
   username: StringLeafPath<TSecrets>;
   password: StringLeafPath<TSecrets>;
+  ssl?: boolean;
+  sslRejectUnauthorized?: boolean;
 };
 
 export type BeekeeperPerkConfig<TSecretDefinitions> = {
@@ -20,9 +27,16 @@ const beekeeperPerkConfigSchema = z.object({
   appDirectory: z.string().optional(),
   connections: z.array(
     z.object({
+      color: z.string().min(1).optional(),
+      connectionType: z.string().min(1).optional(),
+      defaultDatabase: z.string().min(1),
+      host: z.string().min(1),
       label: z.string().min(1),
+      port: z.number().int().positive().optional(),
       username: z.string().min(1),
       password: z.string().min(1),
+      ssl: z.boolean().optional(),
+      sslRejectUnauthorized: z.boolean().optional(),
     }),
   ),
 });
@@ -55,11 +69,20 @@ export const beekeeperPerk = definePerk({
 
       const encryptedPassword = encryptBeekeeperSecret(password, encryptionKey);
 
-      updateBeekeeperSavedConnection({
+      upsertBeekeeperSavedConnection({
         databasePath: paths.databasePath,
-        connectionName: connection.label,
-        username,
-        encryptedPassword,
+        connection: {
+          color: connection.color,
+          connectionType: connection.connectionType ?? "postgresql",
+          defaultDatabase: connection.defaultDatabase,
+          encryptedPassword,
+          host: connection.host,
+          label: connection.label,
+          port: connection.port ?? 5432,
+          ssl: connection.ssl ?? true,
+          sslRejectUnauthorized: connection.sslRejectUnauthorized ?? true,
+          username,
+        },
       });
     }
   },

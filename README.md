@@ -78,7 +78,7 @@ See `examples/tasks/beekeeper.ts` for a public example.
 
 ## Beekeeper perk
 
-The Beekeeper perk updates existing saved connections in Beekeeper Studio's `app.db`.
+The Beekeeper perk creates or updates saved connections in Beekeeper Studio's `app.db`.
 
 For now it only updates:
 
@@ -86,6 +86,8 @@ For now it only updates:
 - `password`
 - `updatedAt`
 
-It preserves all other connection fields.
+When a label already exists, it updates connection settings, credentials, color, and `updatedAt`.
 
-In task files, configure Beekeeper with `connections[]`, where each connection points at string-valued secret paths such as `credentials.username` and `credentials.password`.
+When a label does not exist, it creates a brand new Beekeeper connection from the values in the task.
+
+In task files, configure Beekeeper with `connections[]`, where each connection includes `host` and `defaultDatabase`, and points at string-valued secret paths such as `credentials.username` and `credentials.password`. Each connection can also set `color`, `port`, `connectionType`, `ssl`, and `sslRejectUnauthorized`.

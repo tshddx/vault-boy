@@ -12,6 +12,8 @@ export default defineTask({
   perkConfig: {
     connections: [
       {
+        defaultDatabase: "example_db",
+        host: "db.example.com",
         label: "Example Connection",
         username: "credentials.username",
         password: "credentials.password",
