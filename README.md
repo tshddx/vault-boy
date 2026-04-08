@@ -39,6 +39,16 @@ Run an explicit task file with Vite Task:
 vp run vault-boy -- .local/tasks/prod-atlas.ts
 ```
 
+Or run a perk directly from command-line arguments:
+
+```bash
+vp run vault-boy -- \
+  --perk beekeeper \
+  --vault-read credentials=env/global/database/prod/static-creds/atlas_admin \
+  --connection-name "PROD atlas" \
+  --secret-key credentials
+```
+
 Private tasks live under `.local/` and are gitignored.
 
 ## Vault auth
