@@ -5,8 +5,21 @@ import { encryptBeekeeperSecret, loadBeekeeperEncryptionKey } from "./crypto.ts"
 import { isBeekeeperDatabaseBusy, upsertBeekeeperSavedConnection } from "./database.ts";
 import { getBeekeeperPaths } from "./paths.ts";
 
+export const beekeeperLabelColors = [
+  "default",
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "pink",
+] as const;
+
+export type BeekeeperLabelColor = (typeof beekeeperLabelColors)[number];
+
 export type BeekeeperConnectionConfig<TSecrets> = {
-  color?: string;
+  color?: BeekeeperLabelColor;
   connectionType?: string;
   defaultDatabase: string;
   host: string;
@@ -27,7 +40,7 @@ const beekeeperPerkConfigSchema = z.object({
   appDirectory: z.string().optional(),
   connections: z.array(
     z.object({
-      color: z.string().min(1).optional(),
+      color: z.enum(beekeeperLabelColors).optional(),
       connectionType: z.string().min(1).optional(),
       defaultDatabase: z.string().min(1),
       host: z.string().min(1),
