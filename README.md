@@ -2,7 +2,7 @@
 
 `vault-boy` updates local tools from Vault-backed secrets using typed task files.
 
-The first perk updates a saved Beekeeper Studio connection in its local SQLite database.
+The first perk updates saved Beekeeper Studio connections in its local SQLite database.
 
 ## Requirements
 
@@ -78,7 +78,7 @@ See `examples/tasks/beekeeper.ts` for a public example.
 
 ## Beekeeper perk
 
-The Beekeeper perk updates an existing saved connection in Beekeeper Studio's `app.db`.
+The Beekeeper perk updates existing saved connections in Beekeeper Studio's `app.db`.
 
 For now it only updates:
 
@@ -87,3 +87,5 @@ For now it only updates:
 - `updatedAt`
 
 It preserves all other connection fields.
+
+In task files, configure Beekeeper with `connections[]`, where each connection points at string-valued secret paths such as `credentials.username` and `credentials.password`.

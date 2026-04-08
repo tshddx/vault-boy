@@ -4,7 +4,8 @@ import { pathToFileURL } from "node:url";
 import { perkRegistry } from "./perks/index.ts";
 import { credentialSecretSchema, vaultRead } from "./task.ts";
 import { ensureVaultLogin, readVaultSecret } from "./vault.ts";
-import type { SecretDefinitions, TaskDefinition } from "./task.ts";
+import { resolveSecretDefinitions } from "./task.ts";
+import type { SecretDefinitionTree, TaskDefinition } from "./task.ts";
 
 type TaskInvocation = {
   mode: "task";
@@ -14,7 +15,7 @@ type TaskInvocation = {
 type PerkInvocation = {
   mode: "perk";
   perkName: keyof typeof perkRegistry;
-  secrets: SecretDefinitions;
+  secrets: SecretDefinitionTree;
   perkConfig: Record<string, string>;
 };
 
@@ -48,7 +49,7 @@ export function parseCliArgs(args: string[]): Invocation {
 
   let perkName: keyof typeof perkRegistry | undefined;
   const perkConfig: Record<string, string> = {};
-  const secrets: SecretDefinitions = {};
+  const secrets: SecretDefinitionTree = {};
 
   for (let index = 0; index < filteredArgs.length; index += 1) {
     const arg = filteredArgs[index];
@@ -133,13 +134,8 @@ async function main(): Promise<void> {
 
   ensureVaultLogin(process.env);
   const task = await resolveTask(invocation);
-  const secretEntries = Object.entries(task.secrets) as Array<[string, SecretDefinitions[string]]>;
-
-  const secrets = Object.fromEntries(
-    secretEntries.map(([key, definition]) => [
-      key,
-      readVaultSecret(definition.path, definition.schema, process.env),
-    ]),
+  const secrets = resolveSecretDefinitions(task.secrets, (definition) =>
+    readVaultSecret(definition.path, definition.schema, process.env),
   );
 
   const config = task.perk.configSchema.parse(task.perkConfig);
