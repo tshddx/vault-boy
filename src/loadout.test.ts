@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vite-plus/test";
 import { z } from "zod";
-import { definePerk, defineTask, resolveSecretDefinitions, vaultRead } from "./task.ts";
+import { defineLoadout, definePerk, resolveSecretDefinitions, vaultRead } from "./loadout.ts";
 
-describe("task definitions", () => {
-  test("defineTask resolves callback-based perk config", () => {
+describe("loadout definitions", () => {
+  test("defineLoadout resolves callback-based perk config", () => {
     const perk = definePerk({
       name: "test-perk",
       configSchema: z.object({
@@ -12,7 +12,7 @@ describe("task definitions", () => {
       run() {},
     });
 
-    const task = defineTask({
+    const loadout = defineLoadout({
       secrets: {
         credentials: vaultRead(
           "secret/example",
@@ -25,11 +25,13 @@ describe("task definitions", () => {
       }),
     });
 
-    const secrets = resolveSecretDefinitions(task.secrets, (definition) =>
+    const secrets = resolveSecretDefinitions(loadout.secrets, (definition) =>
       definition.schema.parse({ username: "demo", password: "secret" }),
     );
 
-    expect(task.perk.configSchema.parse(task.perkConfig({ secrets }))).toEqual({ name: "demo" });
+    expect(loadout.perk.configSchema.parse(loadout.perkConfig({ secrets }))).toEqual({
+      name: "demo",
+    });
   });
 
   test("resolveSecretDefinitions supports nested secret trees", () => {

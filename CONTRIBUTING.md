@@ -40,7 +40,7 @@ Then add the perk to `src/perks/index.ts`.
 
 There is no dynamic plugin discovery.
 
-`src/perks/index.ts` is the project's perk registry/barrel. Task files import perks from there:
+`src/perks/index.ts` is the project's perk registry/barrel. Loadout files import perks from there:
 
 ```ts
 import { envPerk } from "../../src/perks/index.ts";
@@ -54,9 +54,9 @@ So when you add a new perk:
 
 That keeps the public import surface simple and predictable.
 
-## Task Authoring Model
+## Loadout Authoring Model
 
-Task files define two things:
+Loadout files define two things:
 
 1. `secrets`
 2. `perkConfig`
@@ -84,7 +84,7 @@ perkConfig: ({ secrets: s }) => ({
 This is the preferred pattern:
 
 - Zod defines the config shape
-- task files use real resolved values
+- loadout files use real resolved values
 - perks do not need special secret-path parsing logic
 
 ## Testing And Verification
@@ -104,7 +104,7 @@ vp check
 vp test
 ```
 
-If the perk is backed by a real local integration, add a public example task under `examples/tasks/` that shows the intended usage pattern with fictional secret paths.
+If the perk is backed by a real local integration, add a public example loadout under `examples/loadouts/` that shows the intended usage pattern with fictional secret paths.
 
 ## Env Perk Walkthrough
 

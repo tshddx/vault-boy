@@ -4,7 +4,7 @@
 
 - Create a Vite+ TypeScript application in the current directory with `vp create vite:application`.
 - Keep it as a single-package Node CLI project.
-- Use `vp` for package management and task execution.
+- Use `vp` for package management and loadout execution.
 - Explicitly pin `pnpm` in `package.json` via `packageManager` even though Vite+ can infer it.
 - Initialize git and prepare for a public repo named `vault-boy` under `tshddox`.
 
@@ -15,7 +15,7 @@
   - purpose
   - setup
   - auth flow
-  - task format
+  - loadout format
   - Beekeeper example usage
 - Add `.gitignore` entries for:
   - `.env`
@@ -24,11 +24,11 @@
   - build outputs
   - coverage/temp files
 
-3. Keep private tasks out of git
+3. Keep private loadouts out of git
 
-- Put real local tasks in `.local/tasks/`.
-- Store your real task at `.local/tasks/prod-atlas.ts`.
-- Commit a generic example instead at `examples/tasks/beekeeper.ts` with no Atlas-specific or company-specific details.
+- Put real local loadouts in `.local/loadouts/`.
+- Store your real loadout at `.local/loadouts/prod-atlas.ts`.
+- Commit a generic example instead at `examples/loadouts/beekeeper.ts` with no Atlas-specific or company-specific details.
 
 4. Configure Vite+ workflow
 
@@ -39,9 +39,9 @@
   - type-aware linting
   - type checking
 - Configure `vp test` to run Vitest on `src/**/*.test.ts`.
-- Configure `vp run` with a task like `sync` that runs the CLI.
-- Require explicit task file usage:
-  - `vp run vault-boy -- .local/tasks/prod-atlas.ts`
+- Configure `vp run` with a command like `vault-boy` that runs the CLI.
+- Require explicit loadout file usage:
+  - `vp run vault-boy -- .local/loadouts/prod-atlas.ts`
 
 5. Build the CLI
 
@@ -50,9 +50,9 @@
   - load `.env`
   - validate required env like `VAULT_ADDR`
   - ensure Vault login
-  - load the specified task file
+  - load the specified loadout file
   - fetch secrets from Vault
-  - validate task/perk config
+  - validate loadout/perk config
   - run the chosen perk
   - print a concise result
 
@@ -69,13 +69,13 @@
   - execute `vault read -format=json <path>`
   - parse JSON stdout
   - validate with Zod
-- For your real local task, the path is:
+- For your real local loadout, the path is:
   - `env/global/database/prod/static-creds/atlas_admin`
 
-7. Build the task system
+7. Build the loadout system
 
-- Implement `defineTask()` and `definePerk()` helpers.
-- Each task file should declare:
+- Implement `defineLoadout()` and `definePerk()` helpers.
+- Each loadout file should declare:
   - which Vault secret(s) to fetch
   - the expected schema for each secret
   - which perk to use
@@ -99,18 +99,18 @@
   - `updatedAt`
 - Preserve all other fields.
 
-9. Real local task: `PROD atlas`
+9. Real local loadout: `PROD atlas`
 
-- Put the real task in `.local/tasks/prod-atlas.ts`.
+- Put the real loadout in `.local/loadouts/prod-atlas.ts`.
 - It should:
   - read Vault secret `env/global/database/prod/static-creds/atlas_admin`
   - extract `username` and `password`
   - target Beekeeper connection `PROD atlas`
 - Do not overwrite host, port, db name, SSL, or other fields in v1.
 
-10. Public example task
+10. Public example loadout
 
-- Add `examples/tasks/beekeeper.ts` showing:
+- Add `examples/loadouts/beekeeper.ts` showing:
   - env-based `VAULT_ADDR`
   - a generic Vault read
   - Beekeeper perk usage
@@ -121,7 +121,7 @@
 - Add unit tests for:
   - Vault auth preflight decision logic
   - Vault JSON parsing
-  - task config typing/validation
+  - loadout config typing/validation
   - Beekeeper `.key` decryption
   - Beekeeper-compatible password encryption
   - SQLite update behavior against a fixture DB copy
@@ -131,7 +131,7 @@
 
 - `vp check`
 - `vp test`
-- `vp run vault-boy -- .local/tasks/prod-atlas.ts`
+- `vp run vault-boy -- .local/loadouts/prod-atlas.ts`
 - Reopen Beekeeper and verify that `PROD atlas` uses updated credentials.
 
 ## Concrete implementation choices
@@ -139,10 +139,10 @@
 - Vault access: Vault CLI
 - Auth bootstrap: automatic OIDC login when token lookup fails
 - Env config: `.env`, gitignored, with `VAULT_ADDR`
-- Private tasks: `.local/tasks/*`
-- Public example: `examples/tasks/beekeeper.ts`
+- Private loadouts: `.local/loadouts/*`
+- Public example: `examples/loadouts/beekeeper.ts`
 - Beekeeper behavior: update only `username` and `password`
 
 ## Recommended command UX
 
-- `vp run sync -- .local/tasks/prod-atlas.ts`
+- `vp run sync -- .local/loadouts/prod-atlas.ts`

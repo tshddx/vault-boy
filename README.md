@@ -32,15 +32,15 @@ VAULT_ADDR=https://vault.example.com:8200
 
 ## Running The Tool
 
-Create a task definition in a `.ts` file, then run that file with `vp run vault-boy`.
+Create a loadout definition in a `.ts` file, then run that file with `vp run vault-boy`.
 
 Example command:
 
 ```bash
-vp run vault-boy -- examples/tasks/env.ts
+vp run vault-boy -- examples/loadouts/env.ts
 ```
 
-The bundled `env` example uses fictional Vault paths, so in practice you will usually copy it to a local task file and replace the paths with your own.
+The bundled `env` example uses fictional Vault paths, so in practice you will usually copy it to a local loadout file and replace the paths with your own.
 
 ## Perks
 

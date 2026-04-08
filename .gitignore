@@ -7,7 +7,7 @@ node_modules/
 dist/
 coverage/
 
-# Local environment and private tasks
+# Local environment and private loadouts
 .env
 .local/
 

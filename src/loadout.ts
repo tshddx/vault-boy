@@ -30,7 +30,7 @@ export type PerkModule<TConfigSchema extends z.ZodTypeAny> = {
   }): Promise<void> | void;
 };
 
-export type TaskDefinition<
+export type LoadoutDefinition<
   TSecrets extends SecretDefinitionTree,
   TConfigSchema extends z.ZodTypeAny,
   TPerk extends PerkModule<TConfigSchema>,
@@ -57,14 +57,14 @@ export function definePerk<TConfigSchema extends z.ZodTypeAny>(
   return module;
 }
 
-export function defineTask<
+export function defineLoadout<
   TSecrets extends SecretDefinitionTree,
   TConfigSchema extends z.ZodTypeAny,
   TPerk extends PerkModule<TConfigSchema>,
 >(
-  task: TaskDefinition<TSecrets, TConfigSchema, TPerk>,
-): TaskDefinition<TSecrets, TConfigSchema, TPerk> {
-  return task;
+  loadout: LoadoutDefinition<TSecrets, TConfigSchema, TPerk>,
+): LoadoutDefinition<TSecrets, TConfigSchema, TPerk> {
+  return loadout;
 }
 
 export function isVaultReadDefinition(

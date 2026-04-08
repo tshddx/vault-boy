@@ -1,12 +1,12 @@
 import "dotenv/config";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { resolveSecretDefinitions } from "./task.ts";
+import { resolveSecretDefinitions } from "./loadout.ts";
 import { ensureVaultLogin, readVaultSecret } from "./vault.ts";
-import type { TaskDefinition } from "./task.ts";
+import type { LoadoutDefinition } from "./loadout.ts";
 
 function getUsage(): string {
-  return ["Usage:", "  vp run vault-boy -- <task-file>"].join("\n");
+  return ["Usage:", "  vp run vault-boy -- <loadout-file>"].join("\n");
 }
 
 export function parseCliArgs(args: string[]): string {
@@ -19,32 +19,32 @@ export function parseCliArgs(args: string[]): string {
   return filteredArgs[0];
 }
 
-async function loadTask(taskPath: string): Promise<TaskDefinition<any, any, any>> {
-  const absoluteTaskPath = path.resolve(taskPath);
-  const imported = (await import(pathToFileURL(absoluteTaskPath).href)) as {
-    default?: TaskDefinition<any, any, any>;
+async function loadLoadout(loadoutPath: string): Promise<LoadoutDefinition<any, any, any>> {
+  const absoluteLoadoutPath = path.resolve(loadoutPath);
+  const imported = (await import(pathToFileURL(absoluteLoadoutPath).href)) as {
+    default?: LoadoutDefinition<any, any, any>;
   };
 
   if (!imported.default) {
-    throw new Error(`Task file ${absoluteTaskPath} must export a default task.`);
+    throw new Error(`Loadout file ${absoluteLoadoutPath} must export a default loadout.`);
   }
 
   return imported.default;
 }
 
 async function main(): Promise<void> {
-  const taskPath = parseCliArgs(process.argv.slice(2));
+  const loadoutPath = parseCliArgs(process.argv.slice(2));
 
   ensureVaultLogin(process.env);
-  const task = await loadTask(taskPath);
-  const secrets = resolveSecretDefinitions(task.secrets, (definition) =>
+  const loadout = await loadLoadout(loadoutPath);
+  const secrets = resolveSecretDefinitions(loadout.secrets, (definition) =>
     readVaultSecret(definition.path, definition.schema, process.env),
   );
 
-  const config = task.perk.configSchema.parse(task.perkConfig({ secrets }));
-  await task.perk.run({ config, secrets });
+  const config = loadout.perk.configSchema.parse(loadout.perkConfig({ secrets }));
+  await loadout.perk.run({ config, secrets });
 
-  console.log(`Updated perk ${task.perk.name} using task ${taskPath}.`);
+  console.log(`Updated perk ${loadout.perk.name} using loadout ${loadoutPath}.`);
 }
 
 main().catch((error: unknown) => {

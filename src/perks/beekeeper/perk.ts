@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { definePerk } from "../../task.ts";
+import { definePerk } from "../../loadout.ts";
 import { encryptBeekeeperSecret, loadBeekeeperEncryptionKey } from "./crypto.ts";
 import { isBeekeeperDatabaseBusy, upsertBeekeeperSavedConnection } from "./database.ts";
 import { getBeekeeperPaths } from "./paths.ts";

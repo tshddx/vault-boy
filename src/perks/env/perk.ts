@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import dotenv from "dotenv";
 import { z } from "zod";
-import { definePerk } from "../../task.ts";
+import { definePerk } from "../../loadout.ts";
 
 const envKeyPattern = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const envAssignmentPattern = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/;
