@@ -1,85 +1,47 @@
 # vault-boy
 
-`vault-boy` updates local tools from Vault-backed secrets using typed task files.
+`vault-boy` fetches secrets from [HashiCorp Vault](https://developer.hashicorp.com/vault) and saves them somewhere useful, such as a `.env` file or a local [Beekeeper Studio](https://www.beekeeperstudio.io/) connection.
 
-The first perk updates saved Beekeeper Studio connections in its local SQLite database.
+## Installation
 
-## Requirements
+This project uses [Vite+](https://viteplus.dev/) and its `vp` CLI tool. Follow the [installation instructions](https://viteplus.dev/guide/#install-vp) or run this:
 
-- Node 24+
-- `vp` installed
-- `vault` CLI installed
-
-## Setup
-
-1. Create a local `.env` file:
-
-```env
-VAULT_ADDR=https://vault.example.com:8200
+```bash
+curl -fsSL https://vite.plus | bash
+vp help
 ```
 
-2. Install dependencies:
+Install the [`vault` CLI] by following the [installation instructions](https://developer.hashicorp.com/vault/install), or run this on macOS with Homebrew:
+
+```bash
+brew tap hashicorp/tap
+brew install hashicorp/tap/vault
+```
+
+Install project dependencies:
 
 ```bash
 vp install
 ```
 
-3. Run checks and tests:
+Create a local `.env` file to specify your Vault URL:
 
-```bash
-vp check
-vp test
+```env
+VAULT_ADDR=https://vault.example.com:8200
 ```
 
-## Usage
+## Running The Tool
 
-Run an explicit task file with Vite Task:
+Create a task definition in a `.ts` file, then run that file with `vp run vault-boy`.
 
-```bash
-vp run vault-boy -- .local/tasks/hadrian.ts
-```
-
-Private tasks live under `.local/` and are gitignored.
-
-## Vault auth
-
-`vault-boy` checks for a valid Vault session with `vault token lookup`.
-
-If that fails, it automatically runs:
+Example command:
 
 ```bash
-vault login -method=oidc role=default
+vp run vault-boy -- examples/tasks/env.ts
 ```
 
-After login succeeds, it reads the task's configured secrets from Vault.
+The bundled `env` example uses fictional Vault paths, so in practice you will usually copy it to a local task file and replace the paths with your own.
 
-## Task files
+`vault-boy` knows how to fetch secrets from Vault. A perk is a module that tells `vault-boy` how to save or output those resolved secrets.
 
-Tasks are regular `.ts` files that export `defineTask(...)`.
-
-They define:
-
-- which Vault paths to read
-- the schema expected from each read
-- which perk to execute
-- callback-based config for that perk using resolved secrets
-
-See `examples/tasks/beekeeper.ts` for a public example.
-
-See `examples/tasks/env.ts` for a perk that writes resolved secrets into a `.env` file.
-
-## Beekeeper perk
-
-The Beekeeper perk creates or updates saved connections in Beekeeper Studio's `app.db`.
-
-For now it only updates:
-
-- `username`
-- `password`
-- `updatedAt`
-
-When a label already exists, it updates connection settings, credentials, color, and `updatedAt`.
-
-When a label does not exist, it creates a brand new Beekeeper connection from the values in the task.
-
-In task files, configure Beekeeper with `connections[]`, where each connection includes `host` and `defaultDatabase`, and uses resolved secret values from `perkConfig: ({ secrets }) => ({ ... })`. Each connection can also set `color`, `port`, `connectionType`, `ssl`, and `sslRejectUnauthorized`.
+For perk development details, see [CONTRIBUTING.md](./CONTRIBUTING.md).

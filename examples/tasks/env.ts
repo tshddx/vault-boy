@@ -20,7 +20,7 @@ export default defineTask({
   secrets,
   perk: envPerk,
   perkConfig: ({ secrets: s }) => ({
-    pathname: ".env",
+    pathname: ".env.example",
     variables: {
       PGHOST: s.postgres.connection.host,
       PGPASSWORD: s.postgres.connection.password,
