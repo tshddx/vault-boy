@@ -1,14 +1,10 @@
 import { z } from "zod";
-import {
-  encryptBeekeeperSecret,
-  getBeekeeperPaths,
-  isBeekeeperDatabaseBusy,
-  loadBeekeeperEncryptionKey,
-  updateBeekeeperSavedConnection,
-} from "../beekeeper.ts";
-import { credentialSecretSchema, defineOutputModule } from "../task.ts";
+import { definePerk, credentialSecretSchema } from "../../task.ts";
+import { encryptBeekeeperSecret, loadBeekeeperEncryptionKey } from "./crypto.ts";
+import { isBeekeeperDatabaseBusy, updateBeekeeperSavedConnection } from "./database.ts";
+import { getBeekeeperPaths } from "./paths.ts";
 
-export const beekeeperOutput = defineOutputModule({
+export const beekeeperPerk = definePerk({
   name: "beekeeper",
   configSchema: z.object({
     connectionName: z.string().min(1),

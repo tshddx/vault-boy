@@ -41,7 +41,7 @@
 - Configure `vp test` to run Vitest on `src/**/*.test.ts`.
 - Configure `vp run` with a task like `sync` that runs the CLI.
 - Require explicit task file usage:
-  - `vp run sync -- .local/tasks/prod-atlas.ts`
+  - `vp run vault-boy -- .local/tasks/prod-atlas.ts`
 
 5. Build the CLI
 
@@ -52,8 +52,8 @@
   - ensure Vault login
   - load the specified task file
   - fetch secrets from Vault
-  - validate task/output config
-  - run the chosen output module
+  - validate task/perk config
+  - run the chosen perk
   - print a concise result
 
 6. Use Vault CLI for auth and reads
@@ -74,17 +74,17 @@
 
 7. Build the task system
 
-- Implement `defineTask()` and `defineOutputModule()` helpers.
+- Implement `defineTask()` and `definePerk()` helpers.
 - Each task file should declare:
   - which Vault secret(s) to fetch
   - the expected schema for each secret
-  - which output module to use
-  - typed config for that output module
-- Each output module should expose:
+  - which perk to use
+  - typed config for that perk
+- Each perk should expose:
   - `configSchema`
   - `run()`
 
-8. Build the Beekeeper output module
+8. Build the Beekeeper perk
 
 - Use the actual local Beekeeper location discovered on this machine:
   - `~/Library/Application Support/beekeeper-studio/app.db`
@@ -113,7 +113,7 @@
 - Add `examples/tasks/beekeeper.ts` showing:
   - env-based `VAULT_ADDR`
   - a generic Vault read
-  - Beekeeper output module usage
+  - Beekeeper perk usage
 - Keep it generic and safe for open source.
 
 11. Tests
@@ -131,7 +131,7 @@
 
 - `vp check`
 - `vp test`
-- `vp run sync -- .local/tasks/prod-atlas.ts`
+- `vp run vault-boy -- .local/tasks/prod-atlas.ts`
 - Reopen Beekeeper and verify that `PROD atlas` uses updated credentials.
 
 ## Concrete implementation choices

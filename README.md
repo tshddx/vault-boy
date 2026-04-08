@@ -2,7 +2,7 @@
 
 `vault-boy` updates local tools from Vault-backed secrets using typed task files.
 
-The first output module updates a saved Beekeeper Studio connection in its local SQLite database.
+The first perk updates a saved Beekeeper Studio connection in its local SQLite database.
 
 ## Requirements
 
@@ -36,7 +36,7 @@ vp test
 Run an explicit task file with Vite Task:
 
 ```bash
-vp run sync -- .local/tasks/prod-atlas.ts
+vp run vault-boy -- .local/tasks/prod-atlas.ts
 ```
 
 Private tasks live under `.local/` and are gitignored.
@@ -61,14 +61,14 @@ They define:
 
 - which Vault paths to read
 - the schema expected from each read
-- which output module to execute
-- typed config for that output module
+- which perk to execute
+- typed config for that perk
 
 See `examples/tasks/beekeeper.ts` for a public example.
 
-## Beekeeper output
+## Beekeeper perk
 
-The Beekeeper output module updates an existing saved connection in Beekeeper Studio's `app.db`.
+The Beekeeper perk updates an existing saved connection in Beekeeper Studio's `app.db`.
 
 For now it only updates:
 

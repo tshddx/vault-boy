@@ -8,7 +8,7 @@ export type VaultReadDefinition<TSchema extends z.ZodTypeAny> = {
 
 export type SecretDefinitions = Record<string, VaultReadDefinition<z.ZodTypeAny>>;
 
-export type OutputModule<TConfigSchema extends z.ZodTypeAny> = {
+export type PerkModule<TConfigSchema extends z.ZodTypeAny> = {
   name: string;
   configSchema: TConfigSchema;
   run(args: {
@@ -19,11 +19,11 @@ export type OutputModule<TConfigSchema extends z.ZodTypeAny> = {
 
 export type TaskDefinition<
   TSecrets extends SecretDefinitions,
-  TOutput extends OutputModule<z.ZodTypeAny>,
+  TPerk extends PerkModule<z.ZodTypeAny>,
 > = {
   secrets: TSecrets;
-  output: TOutput;
-  outputConfig: z.input<TOutput["configSchema"]>;
+  perk: TPerk;
+  perkConfig: z.input<TPerk["configSchema"]>;
 };
 
 export function vaultRead<TSchema extends z.ZodTypeAny>(
@@ -37,16 +37,16 @@ export function vaultRead<TSchema extends z.ZodTypeAny>(
   };
 }
 
-export function defineOutputModule<TConfigSchema extends z.ZodTypeAny>(
-  module: OutputModule<TConfigSchema>,
-): OutputModule<TConfigSchema> {
+export function definePerk<TConfigSchema extends z.ZodTypeAny>(
+  module: PerkModule<TConfigSchema>,
+): PerkModule<TConfigSchema> {
   return module;
 }
 
 export function defineTask<
   TSecrets extends SecretDefinitions,
-  TOutput extends OutputModule<z.ZodTypeAny>,
->(task: TaskDefinition<TSecrets, TOutput>): TaskDefinition<TSecrets, TOutput> {
+  TPerk extends PerkModule<z.ZodTypeAny>,
+>(task: TaskDefinition<TSecrets, TPerk>): TaskDefinition<TSecrets, TPerk> {
   return task;
 }
 

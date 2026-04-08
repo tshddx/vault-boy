@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vite-plus/test";
 import { z } from "zod";
-import { defineOutputModule, defineTask, vaultRead } from "./task.ts";
+import { definePerk, defineTask, vaultRead } from "./task.ts";
 
 describe("task definitions", () => {
-  test("defineTask preserves output config for parsing", () => {
-    const output = defineOutputModule({
-      name: "test-output",
+  test("defineTask preserves perk config for parsing", () => {
+    const perk = definePerk({
+      name: "test-perk",
       configSchema: z.object({
         name: z.string(),
       }),
@@ -19,12 +19,12 @@ describe("task definitions", () => {
           z.object({ username: z.string(), password: z.string() }),
         ),
       },
-      output,
-      outputConfig: {
+      perk,
+      perkConfig: {
         name: "demo",
       },
     });
 
-    expect(task.output.configSchema.parse(task.outputConfig)).toEqual({ name: "demo" });
+    expect(task.perk.configSchema.parse(task.perkConfig)).toEqual({ name: "demo" });
   });
 });

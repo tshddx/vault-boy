@@ -4,18 +4,18 @@ import Database from "better-sqlite3";
 import { createEncryptor } from "simple-encryptor";
 import { describe, expect, test } from "vite-plus/test";
 import {
-  encryptBeekeeperSecret,
-  loadBeekeeperEncryptionKey,
-  updateBeekeeperSavedConnection,
-} from "./beekeeper.ts";
-import {
   createBeekeeperDatabase,
   createTempDir,
   randomEncryptionKey,
   writeBeekeeperKeyFile,
-} from "./fixtures.ts";
+} from "../../fixtures.ts";
+import {
+  encryptBeekeeperSecret,
+  loadBeekeeperEncryptionKey,
+  updateBeekeeperSavedConnection,
+} from "./index.ts";
 
-describe("beekeeper helpers", () => {
+describe("beekeeper perk helpers", () => {
   test("loadBeekeeperEncryptionKey decrypts the key file", () => {
     const tempDir = createTempDir("vault-boy-key-");
     const expectedKey = randomEncryptionKey();

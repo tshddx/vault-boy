@@ -16,7 +16,7 @@ export default defineConfig({
   },
   run: {
     tasks: {
-      sync: {
+      "vault-boy": {
         command: "node --experimental-strip-types ./src/cli.ts",
         cache: false,
       },

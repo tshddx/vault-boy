@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   const taskPath = process.argv.slice(2).find((arg) => arg !== "--");
 
   if (!taskPath) {
-    throw new Error("Usage: vp run sync -- <task-file>");
+    throw new Error("Usage: vp run vault-boy -- <task-file>");
   }
 
   ensureVaultLogin(process.env);
@@ -35,10 +35,10 @@ async function main(): Promise<void> {
     ]),
   );
 
-  const config = task.output.configSchema.parse(task.outputConfig);
-  await task.output.run({ config, secrets });
+  const config = task.perk.configSchema.parse(task.perkConfig);
+  await task.perk.run({ config, secrets });
 
-  console.log(`Updated output ${task.output.name} using task ${taskPath}.`);
+  console.log(`Updated perk ${task.perk.name} using task ${taskPath}.`);
 }
 
 main().catch((error: unknown) => {
