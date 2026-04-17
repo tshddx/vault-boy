@@ -47,7 +47,7 @@ function insertSavedConnection(
           username,
           defaultDatabase,
           path,
-          uri,
+          url,
           uniqueHash,
           name,
           password,

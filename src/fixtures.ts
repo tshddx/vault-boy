@@ -38,7 +38,7 @@ export function createBeekeeperDatabase(databasePath: string): void {
         username varchar,
         defaultDatabase varchar,
         path varchar,
-        uri varchar,
+        url varchar,
         uniqueHash varchar(500) NOT NULL,
         name varchar NOT NULL,
         password varchar,
