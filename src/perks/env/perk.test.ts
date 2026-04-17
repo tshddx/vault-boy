@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vite-plus/test";
-import { createTempDir } from "../../fixtures.ts";
+import { createTempDir } from "../../test-utils.ts";
 import { upsertEnvFile } from "./index.ts";
 
 const originalCwd = process.cwd();

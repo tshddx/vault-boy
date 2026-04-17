@@ -3,12 +3,8 @@ import path from "node:path";
 import Database from "better-sqlite3";
 import { createEncryptor } from "simple-encryptor";
 import { describe, expect, test } from "vite-plus/test";
-import {
-  createBeekeeperDatabase,
-  createTempDir,
-  randomEncryptionKey,
-  writeBeekeeperKeyFile,
-} from "../../fixtures.ts";
+import { createTempDir, randomEncryptionKey } from "../../test-utils.ts";
+import { createBeekeeperDatabase, writeBeekeeperKeyFile } from "./fixtures.ts";
 import {
   encryptBeekeeperSecret,
   loadBeekeeperEncryptionKey,

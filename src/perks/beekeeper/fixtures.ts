@@ -1,25 +1,15 @@
-import crypto from "node:crypto";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import Database from "better-sqlite3";
 import { createEncryptor } from "simple-encryptor";
 
 const BEEKEEPER_BOOTSTRAP_KEY = "38782F413F442A472D4B6150645367566B59703373367639792442264529482B";
 
-export function createTempDir(prefix: string): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-}
-
 export function writeBeekeeperKeyFile(directory: string, encryptionKey: string): string {
   const keyPath = path.join(directory, ".key");
   const encrypted = createEncryptor(BEEKEEPER_BOOTSTRAP_KEY).encrypt({ encryptionKey });
   fs.writeFileSync(keyPath, encrypted, "utf8");
   return keyPath;
-}
-
-export function randomEncryptionKey(): string {
-  return crypto.randomBytes(32).toString("hex");
 }
 
 export function createBeekeeperDatabase(databasePath: string): void {
