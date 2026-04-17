@@ -1,6 +1,6 @@
 # Contributing
 
-A perk is a modules that tells `vault-boy` how to save or output secrets fetched from Vault.
+A perk is a module that tells `vault-boy` how to save or output secrets fetched from Vault.
 
 If you are using an LLM to help implement a perk, point it at `src/perks/env/perk.ts` first (or just point it at this document). That file is the best small reference implementation in the repo.
 
